@@ -1,9 +1,7 @@
 import React, {Component} from "react";
-import { loadDepartment } from "../../api";
-import {connect} from 'react-redux';
-import PropTypes from 'react-proptypes';
+import api from "../../api";
 
-class DepartmentViewPage extends Component {
+export default class DepartmentViewPage extends Component {
     constructor(props) {
         super(props);
 
@@ -13,7 +11,7 @@ class DepartmentViewPage extends Component {
     }
 
     componentWillMount() {
-        this.props.loadDepartment(this.props.match.params.id)
+        api.loadDepartment(this.props.match.params.id)
             .then((res) => {
                 this.setState({
                     name: res.data.name
@@ -27,9 +25,3 @@ class DepartmentViewPage extends Component {
         );
     }
 }
-
-DepartmentViewPage.propTypes = {
-    loadDepartment: PropTypes.func.isRequired
-};
-
-export default connect(null, { loadDepartment })(DepartmentViewPage);

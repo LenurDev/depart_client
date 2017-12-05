@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { addEmployee } from '../../actions/employeeActions';
 import { loadDepartments } from '../../actions/departmentActions';
-import { loadDepartment, loadEmployee, editEmployee } from '../../api';
 import { connect } from 'react-redux';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import validateForm from '../../validations/employee';
 import isObject from 'lodash/isObject';
 import classNames from 'classnames';
 import PropTypes from 'react-proptypes';
+import api from '../../api';
 
 class EmployeeForm extends Component {
     constructor(props){
@@ -23,16 +23,18 @@ class EmployeeForm extends Component {
     }
 
     componentWillMount(){
-        this.props.loadDepartments();
+        const {props} = this;
 
-        if (this.props.isEdit) {
-            this.props.loadEmployee(this.props.employeeId)
+        props.loadDepartments();
+
+        if (props.isEdit) {
+            api.loadEmployee(props.employeeId)
                 .then((res) => {
                     this.setState({
                         firstName: res.data.firstName,
                         lastName: res.data.lastName
                     });
-                    this.props.loadDepartment(res.data.departmentId)
+                    api.loadDepartment(res.data.departmentId)
                         .then((res) => {
                             if (isObject(res.data)) {
                                 this.setState({
@@ -55,29 +57,32 @@ class EmployeeForm extends Component {
     }
 
     onSubmit = (e) => {
-        const {props} = this;
+        const {props, state} = this;
 
         e.preventDefault();
         if (this.isValid()){
             this.setState({ errors: [], isLoading: true });
 
             let model = {
-                firstName: this.state.firstName,
-                lastName: this.state.lastName,
-                departmentId: this.state.department.id,
+                firstName: state.firstName,
+                lastName: state.lastName,
+                departmentId: state.department.id,
             };
 
-            let methodName = 'addEmployee';
             if (props.isEdit) {
                 model.id = props.employeeId;
-                methodName = 'editEmployee'
-            }
-
-            this.props[methodName](model)
-                .then(res => this.props.history.push('/employees'))
+                  api.editEmployee(model)
+                    .then(res => props.history.push('/employees'))
+                    .catch(err => {
+                      this.setState({ errors: err.response.data.errors, isLoading: false });
+                    });
+            } else {
+              props.addEmployee(model)
+                .then(res => props.history.push('/employees'))
                 .catch(err => {
-                    this.setState({ errors: err.response.data.errors, isLoading: false });
+                  this.setState({ errors: err.response.data.errors, isLoading: false });
                 });
+            }
         }
     };
 
@@ -100,30 +105,31 @@ class EmployeeForm extends Component {
     };
 
     render() {
+        const {props, state} = this;
         return (
             <form onSubmit={this.onSubmit}>
-                <div className={classNames('form-group', { 'has-error': this.state.errors['firstName']})}>
+                <div className={classNames('form-group', { 'has-error': state.errors['firstName']})}>
                     <label>First Name</label>
-                    <input className="form-control" name="firstName" placeholder="Please enter first name" value={this.state.firstName} onChange={this.onChange}/>
+                    <input className="form-control" name="firstName" placeholder="Please enter first name" value={state.firstName} onChange={this.onChange}/>
                 </div>
                 <div className={classNames('form-group', { 'has-error': this.state.errors['lastName']})}>
                     <label>Last Name</label>
-                    <input className="form-control" name="lastName" placeholder="Please enter last name" value={this.state.lastName} onChange={this.onChange}/>
+                    <input className="form-control" name="lastName" placeholder="Please enter last name" value={state.lastName} onChange={this.onChange}/>
                 </div>
                 <div className={classNames('form-group', { 'has-error': this.state.errors['department']})}>
                     <label>Department</label>
-                    <Typeahead options={this.props.departments}
+                    <Typeahead options={props.departments}
                                placeholder="Please enter department name"
                                labelKey="name"
-                               value={this.state.department}
-                               selected={[this.state.department]}
+                               value={state.department}
+                               selected={[state.department]}
                                onChange={this.onChangeDepartment}
                     />
                 </div>
                 <div className="form-group">
                     <div className="row">
                         <div className="col-md-12">
-                            <button type="submit" className="btn btn-primary">{this.props.isEdit ? 'Edit' : 'Add'}</button>&nbsp;
+                            <button type="submit" className="btn btn-primary">{props.isEdit ? 'Edit' : 'Add'}</button>&nbsp;
                             <button className="btn btn-default" onClick={this.cancel}>Cancel</button>
                         </div>
                     </div>
@@ -136,14 +142,11 @@ class EmployeeForm extends Component {
 EmployeeForm.propTypes = {
     departments: PropTypes.array.isRequired,
     addEmployee: PropTypes.func.isRequired,
-    editEmployee: PropTypes.func.isRequired,
-    loadDepartments: PropTypes.func.isRequired,
-    loadEmployee: PropTypes.func.isRequired,
-    loadDepartment: PropTypes.func.isRequired
+    loadDepartments: PropTypes.func.isRequired
 };
 
 export default connect( state => {
     return {
         departments: state.departments
     }
-}, { addEmployee, editEmployee, loadDepartments, loadEmployee, loadDepartment })(EmployeeForm);
+}, { addEmployee, loadDepartments })(EmployeeForm);

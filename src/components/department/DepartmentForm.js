@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { addDepartment, editDepartment, loadDepartment } from '../../api';
-import { connect } from 'react-redux';
 import validateForm from '../../validations/department';
 import classNames from 'classnames';
-import PropTypes from 'react-proptypes';
+import api from '../../api';
 
-class DepartmentForm extends Component {
+export default class DepartmentForm extends Component {
 
     constructor(props){
         super(props);
@@ -19,7 +17,7 @@ class DepartmentForm extends Component {
 
     componentWillMount() {
         if (this.props.isEdit) {
-            this.props.loadDepartment(this.props.departmentId)
+            api.loadDepartment(this.props.departmentId)
                 .then(res => {
                     this.setState({
                         name: res.data.name
@@ -50,13 +48,13 @@ class DepartmentForm extends Component {
                     name: this.state.name
                 };
 
-                this.props.editDepartment(model)
+                api.editDepartment(model)
                     .then(res => this.props.history.push('/'))
                     .catch(err => {
                         this.setState({ errors: err.response.data.errors, isLoading: false });
                     });
             } else {
-                this.props.addDepartment(this.state.name)
+              api.addDepartment(this.state.name)
                     .then(res => this.props.history.push('/'))
                     .catch(err => {
                         this.setState({ errors: err.response.data.errors, isLoading: false });
@@ -98,11 +96,3 @@ class DepartmentForm extends Component {
         );
     }
 }
-
-DepartmentForm.propTypes = {
-    addDepartment: PropTypes.func.isRequired,
-    editDepartment: PropTypes.func.isRequired,
-    loadDepartment: PropTypes.func.isRequired
-};
-
-export default connect( null, { addDepartment, editDepartment, loadDepartment })(DepartmentForm);
