@@ -2,31 +2,34 @@
 @import '~bootstrap-ui-kit/get-shit-done-1.4.1/bootstrap3/css/font-awesome.css';
 @import '~startbootstrap-sb-admin-2/dist/css/sb-admin-2.min.css';
 
-.number{
-  width: 50px;
-}
+table {
+  .number{
+    width: 50px;
+  }
 
-.content {
-  font-size: 12px;
-  font-weight: 600;
-  a {
-    color: #333;
+  .content {
+    font-size: 12px;
+    font-weight: 600;
+    a {
+      color: #333;
 
-    &:hover {
-      color: rgba(29, 22, 22, 0.6);
+      &:hover {
+        color: rgba(29, 22, 22, 0.6);
+      }
     }
   }
-}
 
-.options {
-  width: 65px;
-  i {
-    cursor: pointer;
-    font-size: 15px;
-    color: rgba(29, 22, 22, 0.6);
-    padding: 3px;
-  }
-  .fa-pencil {
+  .options {
+    width: 65px;
 
+    i {
+      cursor: pointer;
+      font-size: 15px;
+      color: rgba(29, 22, 22, 0.6);
+      padding: 3px;
+    }
+    .fa-pencil {
+
+    }
   }
 }
