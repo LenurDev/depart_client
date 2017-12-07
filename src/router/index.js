@@ -6,26 +6,24 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import App from '../components/App';
 
 import DepartmentList from '../components/department/DepartmentList';
-import DepartmentAddPage from '../components/department/DepartmentForm';
-import DepartmentEditPage from '../components/department/DepartmentEditPage';
+import DepartmentForm from '../components/department/DepartmentForm';
 import DepartmentViewPage from '../components/department/DepartmentViewPage';
 
 import EmployeeList from '../components/employee/EmployeeList';
-import EmployeeAddPage from '../components/employee/EmployeeAddPage';
-import EmployeeEditPage from '../components/employee/EmployeeEditPage';
+import EmployeeForm from '../components/employee/EmployeeForm';
 
 export default () => (
   <Router>
     <App>
       <Switch>
         <Route path="/" exact component={DepartmentList} />
-        <Route path="/add-department" exact component={DepartmentAddPage} />
+        <Route path="/add-department" exact component={DepartmentForm} />
+        <Route path="/edit-department/:id" exact component={DepartmentForm} />
         <Route path="/view-department/:id" exact component={DepartmentViewPage} />
-        <Route path="/edit-department/:id" exact component={DepartmentEditPage} />
 
         <Route path="/employees" exact component={EmployeeList} />
-        <Route path="/add-employee" exact component={EmployeeAddPage} />
-        <Route path="/edit-employee/:id" exact component={EmployeeEditPage} />
+        <Route path="/add-employee" exact component={EmployeeForm} />
+        <Route path="/edit-employee/:id" exact component={EmployeeForm} />
       </Switch>
     </App>
   </Router>

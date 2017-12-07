@@ -11,7 +11,7 @@ class DepartmentList extends PureComponent {
         this.props.loadDepartments();
     }
 
-    getContext() {
+    renderContext() {
         let context;
         const {departments} = this.props;
         if (departments.length) {
@@ -44,7 +44,7 @@ class DepartmentList extends PureComponent {
                         <i className="fa fa-plus"></i> Add department
                     </Link>
                 </h1>
-                {this.getContext()}
+                {this.renderContext()}
             </div>
         );
     }

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export default {
-  addDepartment:  (name) => axios.post('/api/departments', { name }),
+  addDepartment:  (data) => axios.post('/api/departments', data),
   editDepartment: (data) => axios.put(`/api/departments/${data.id}`, data),
   loadDepartment: (id) => axios.get(`/api/departments/${id}`),
   loadEmployee: (id) => axios.get(`/api/employees/${id}`),
